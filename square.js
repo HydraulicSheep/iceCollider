@@ -4,6 +4,7 @@ class Square {
     constructor(x,y,width,height,v) {
 
         this.mass = 1;
+        this.friction = 0.001;
         this.x = x;
         this.y = y;
         this.width=width;
@@ -26,6 +27,20 @@ class Square {
         this.x += this.v[0]*time_step;
         this.y += this.v[1]*time_step;
 
+        // Calculations to handle friction
+        if (this.v[0] < 0) {
+            this.v[0] = Math.min(0,this.v[0]+this.friction)
+        }
+        if (this.v[0] > 0) {
+            this.v[0] = Math.max(0,this.v[0]-this.friction)
+        }
+        if (this.v[1] < 0) {
+            this.v[1] = Math.min(0,this.v[1]+this.friction)
+        }
+        if (this.v[1] > 0) {
+            this.v[1] = Math.max(0,this.v[1]-this.friction)
+        }
+        
     }
 
     update(action) {
