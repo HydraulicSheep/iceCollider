@@ -1,5 +1,6 @@
 var CANVAS_ID = 'canvas';
 var TIME_STEP = 1
+var MAX_OBJS = 10
 
 // Event Handler for Window Size Change
 function updateWindowSize() {
@@ -25,6 +26,7 @@ function getHeight() {
 // Assigns event handler for window size change
 window.onresize = updateWindowSize;
 
+
 var width = getWidth();
 var height = getHeight();
 
@@ -40,6 +42,20 @@ function init_canvas() {
 
     // Checks the canvas is available for drawing
     if (!canvas.getContext) return;
+
+    // Adds Click event listener
+    canvas.addEventListener('mousedown', e => {
+        const rect = canvas.getBoundingClientRect()
+        vx = (Math.random()-0.5)*10
+        vy = (Math.random()-0.5)*10
+        x = e.clientX - rect.left
+        y = e.clientY - rect.top
+        a = new Square(x,y,50,50,[vx,vy])
+        if (items.length >= MAX_OBJS) {
+            items.shift()
+        }
+        items.push(a)
+    })
 
     // use getContext to use the canvas for drawing
     var ctx = canvas.getContext('2d');
