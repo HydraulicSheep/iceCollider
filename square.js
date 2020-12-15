@@ -3,6 +3,7 @@ class Square {
 
     constructor(x,y,width,height,v) {
 
+        this.mass = 1;
         this.x = x;
         this.y = y;
         this.width=width;
@@ -28,12 +29,17 @@ class Square {
     }
 
     update(action) {
-
         this.x += action[1];
         this.y += action[2];
         this.v[0] += action[3];
         this.v[1] += action[4];
+    }
 
+    getBoundingBox() {
+
+
+
+        return this
     }
 
 }

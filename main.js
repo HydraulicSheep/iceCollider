@@ -45,11 +45,15 @@ function init_canvas() {
     var ctx = canvas.getContext('2d');
     
     // Draws a single square
-    a = new Square(200,200,10,10,[-5,-5])
-    b = new Square(30,30,10,10,[5,5])
+    a = new Square(200,200,50,50,[-5,-5])
+    b = new Square(30,30,50,50,[5,5])
+    c = new Square(80,400,50,50,[1,5])
+    d = new Square(600,10,50,50,[1,5])
 
     items.push(a);
     items.push(b);
+    items.push(c);
+    items.push(d);
 
     requestAnimationFrame(run_sim);
     x=0;
@@ -67,13 +71,10 @@ function run_sim() {
 }
 
 function update_canvas() {
+    var canvas = document.getElementById(CANVAS_ID);  
     // Collision queue to store pending changes
     var collision_queue = []
 
-    var canvas = document.getElementById(CANVAS_ID);     
-    for (item of items) {
-        item.do_step(TIME_STEP);
-    }
     var action = []
     // Detect Collisions with walls
     for (item of items) {
@@ -90,9 +91,52 @@ function update_canvas() {
         }
     }
 
+    // Bounding Box Collision Detection
+    var bounding_boxes = []
+    for (item of items) {
+        bounding_boxes.push(item.getBoundingBox())
+    }
+    var i=0;
+    for (i=0; i<items.length;i++) {
+        for (j=i+1;j<items.length;j++) {
+            if (bounding_intersection_check(bounding_boxes[i], bounding_boxes[j])) {
+                console.log('COLLISION!!!')
+                v1 = items[i].v
+                v1_t = get_vec(bounding_boxes[i],bounding_boxes[j])
+                v2 = items[j].v
+                v2_t = vec_mul(v1_t,-1)
+                console.log(v1_t)
+                console.log(v2_t)
+                v1_parallel = vec_mul(v1_t,dotp(v1,v1_t)/(mag(v1_t)**2))
+                v1_perp = vec_sub(v1,v1_parallel)
+                res = vec_add(v1_perp, vec_mul(v1_parallel,-1))
+                t = vec_sub(res,v1)
+                console.log(dotp(v1,v1_t))
+                console.log(v1_perp)
+                action = [items[i],0,0,t[0],t[1]];
+                collision_queue.push(action)
+
+                v2_parallel = vec_mul(v2_t,dotp(v2,v2_t)/(mag(v2_t)**2))
+                v2_perp = vec_sub(v2,v2_parallel)
+                res = vec_add(v2_perp, vec_mul(v2_parallel,-1))
+                t = vec_sub(res,v2)
+
+                action = [items[j],0,0,t[0],t[1]];
+                collision_queue.push(action)
+                console.log(action)
+
+            }
+        }
+    }
+
     for (action of collision_queue) {
         i = action[0]
         i.update(action);
+    }
+
+       
+    for (item of items) {
+        item.do_step(TIME_STEP);
     }
 }
 
@@ -112,4 +156,102 @@ function paint() {
         shape.draw(context);
     }
 
+}
+
+function bounding_intersection_check(box1, box2) {
+
+    xmatch = false;
+    ymatch = false;
+    
+    if (box1.x > box2.x && box1.x < box2.x+box2.width) {
+        xmatch = true
+    }
+    if (box2.x > box1.x && box2.x < box1.x+box1.width) {
+        xmatch = true
+    }
+    if (box1.y > box2.y && box1.y < box2.y+box2.height) {
+        ymatch = true
+    }
+    if (box2.y > box1.y && box2.y < box1.y+box1.height) {
+        ymatch = true
+    }
+
+    return (xmatch && ymatch)
+}
+
+function get_vec(box1, box2) {
+
+    relx = box2.x - box1.x;
+    rely = box2.y - box1.y;
+
+    return [relx, rely]
+
+}
+
+// Will only produce reasonable collisions for symmetrical shapes
+function get_bearing(box1, box2) {
+
+    // Uses trig and adjustment to the right quadrants to get the correct intersection point
+    
+    relx = box2.x - box1.x;
+    rely = box2.y - box1.y;
+
+    angle_rad = Math.atan(Math.abs(relx)/Math.abs(rely));
+    angle = angle_rad*180/Math.PI
+
+    if (relx > 0 && rely > 0) {
+        return angle;
+    }
+    if (relx < 0 && rely > 0) {
+        return 360-angle;
+    }
+    if (relx > 0 && rely < 0) {
+        return 180-angle;
+    }
+    if (relx < 0 && rely < 0) {
+        return 180+angle;
+    }
+
+}
+
+function dotp(v1, v2) {
+
+    total = 0
+    for (i =0;i<v1.length;i++) {
+        total += v1[i]*v2[i]
+    }
+    return total;
+}
+
+function mag(v1) {
+
+    total = 0
+    for (i=0;i<v1.length;i++) {
+        total += v1[i]**2
+    }
+    return Math.sqrt(total)
+}
+
+function vec_mul(v1, t) {
+
+    res = []
+    for (i of v1) {
+        res.push(i*t)
+    }
+    return res
+}
+
+function vec_add(v1, v2) {
+
+    res = []
+
+    for (i =0; i< v1.length;i++) {
+        res.push(v1[i]+v2[i])
+    }
+
+    return res
+}
+
+function vec_sub(v1,v2) {
+    return vec_add(v1,vec_mul(v2,-1))
 }
