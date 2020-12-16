@@ -17,9 +17,9 @@ class Square {
     draw(context) {
 
         if (this.colliding>0) {
-            context.fillStyle = "red"; 
+            context.fillStyle = "#f78243"; 
         } else {
-            context.fillStyle = "blue"; 
+            context.fillStyle = "#0081b0"; 
         }
             
         context.fillRect(this.x,this.y,this.width,this.height);     

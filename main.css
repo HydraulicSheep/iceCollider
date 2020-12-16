@@ -1,18 +1,66 @@
 html {
 
-    background-color: paleturquoise;
+    background-color: rgb(236, 161, 158)
 
 
 
 }
-#header {
+#title {
     font-family: Arial, Helvetica, sans-serif;
-    color: blue;
+    color: rgb(0, 109, 199);
     font-weight: bold;
     text-align: center;
-    border-style: solid;
-    border-color: white;
-    border-width: 0pc 0pc 0.01pc 0pc;
-    padding: 0.1pc;
+    padding: 0pc 0pc 1pc 0pc;
+    
 
 }
+
+#header {
+    border-color: rgb(180, 0, 135);
+    border-style: solid;
+    border-width: 0pc 0pc 0.01pc 0pc;
+    
+}
+
+#overlay {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: small;
+    position: fixed; /* Sit on top of the page content */
+    width: 15%;
+    height: 50px;
+    top: 20%;
+    right: 5%;
+    background-color: rgba(237, 225, 55,0.5); /* Black background with opacity */
+    border-radius: 0.5pc;
+    padding: 1%;
+  }
+
+  a {
+    color: black;
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: grey;
+    text-decoration: none;
+  }
+
+  
+.drop_button {
+    background-color: black;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  
+  .selector {
+    position: relative;
+    display: inline-block;
+  }
+  
+  /* Hides dropdown information */
+  .options {
+    display: none;
+  }
+  

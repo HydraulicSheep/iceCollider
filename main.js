@@ -79,14 +79,8 @@ function init_canvas() {
 function update_colours() {
 
     for (item of items) {
-
         item.colliding--;
-
-
     }
-
-
-
 }
 
 
