@@ -1,6 +1,7 @@
 var CANVAS_ID = 'canvas';
 var TIME_STEP = 1
-var MAX_OBJS = 10
+var MAX_OBJS = 15
+var COLOUR_TIME = 10
 
 // Event Handler for Window Size Change
 function updateWindowSize() {
@@ -36,8 +37,8 @@ function init_canvas() {
             
     // Get Canvas Element by ID
     var canvas = document.getElementById(CANVAS_ID);
-    canvas.width = width*0.95
-    canvas.height = height*0.95
+    canvas.width = width*0.99
+    canvas.height = height*0.90
 
 
     // Checks the canvas is available for drawing
@@ -75,10 +76,26 @@ function init_canvas() {
     x=0;
 }
 
-var x = 0;
+function update_colours() {
+
+    for (item of items) {
+
+        item.colliding--;
+
+
+    }
+
+
+
+}
+
+
+
+// Main Game Loop
 function run_sim() {
 
     clear_canvas();
+    update_colours();
     update_canvas();
     paint();
     
@@ -120,6 +137,9 @@ function update_canvas() {
                 
                 v1 = items[i].v
                 v2 = items[j].v
+
+                items[i].colliding = COLOUR_TIME
+                items[j].colliding = COLOUR_TIME
 
                 // Vector between bounding box centres
                 vCollision = get_vec(bounding_boxes[i],bounding_boxes[j]) 

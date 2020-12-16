@@ -4,7 +4,8 @@ class Square {
     constructor(x,y,width,height,v) {
 
         this.mass = 1;
-        this.friction = 0.001;
+        this.friction = 0;
+        this.colliding = 0;
         this.x = x;
         this.y = y;
         this.width=width;
@@ -15,7 +16,12 @@ class Square {
 
     draw(context) {
 
-        context.fillStyle = "red";     
+        if (this.colliding>0) {
+            context.fillStyle = "red"; 
+        } else {
+            context.fillStyle = "blue"; 
+        }
+            
         context.fillRect(this.x,this.y,this.width,this.height);     
 
 

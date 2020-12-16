@@ -1,0 +1,18 @@
+html {
+
+    background-color: paleturquoise;
+
+
+
+}
+#header {
+    font-family: Arial, Helvetica, sans-serif;
+    color: blue;
+    font-weight: bold;
+    text-align: center;
+    border-style: solid;
+    border-color: white;
+    border-width: 0pc 0pc 0.01pc 0pc;
+    padding: 0.1pc;
+
+}
