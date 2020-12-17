@@ -36,7 +36,7 @@ html {
     position: fixed; /* Sit on top of the page content */
     width: 15%;
     height: 50px;
-    top: 20%;
+    top: 15%;
     right: 5%;
     background-color: rgba(237, 225, 55,0.5); /* Black background with opacity */
     border-radius: 0.5pc;

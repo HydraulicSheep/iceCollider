@@ -3,6 +3,8 @@ var TIME_STEP = 1
 var MAX_OBJS = 15
 var COLOUR_TIME = 10
 
+first = true;
+
 // Event Handler for Window Size Change
 function updateWindowSize() {
 
@@ -47,11 +49,23 @@ function init_canvas() {
     // Adds Click event listener
     canvas.addEventListener('mousedown', e => {
         const rect = canvas.getBoundingClientRect()
-        vx = (Math.random()-0.5)*20
-        vy = (Math.random()-0.5)*20
+        if (first) {
+            vx = 20
+            vy = 20
+            first = false;
+        } else {
+            vx = (Math.random()-0.5)*20
+            vy = (Math.random()-0.5)*20
+        }
+        
         x = e.clientX - rect.left
         y = e.clientY - rect.top
         a = new Square(x,y,50,50,[vx,vy])
+
+        // Delete an extra item when over the count
+        if (items.length > MAX_OBJS) {
+            items.shift()
+        }
         if (items.length >= MAX_OBJS) {
             items.shift()
         }
@@ -71,29 +85,51 @@ function init_canvas() {
 
     // Added starting layout to spell out the word 'ICE'
 
+    // Block from 0 to width/3, width/3 to 2*width/3, 2*width/3 to width
+
+    var top = canvas.height/3
+    var bottom = 2*canvas.height/3
+    var wd = Math.min(canvas.width,canvas.height)/15
+
     // Letter I
-    a = new Square(200,230,50,50, [0,0]);
-    b = new Square(200,170,50,50, [0,0]);
-    c = new Square(200,100,50,50, [0,0]);
-    d = new Square(200,300,50,50, [0,0]);
+    var i_block_centre = canvas.width/3 * 0.5
+    var offset = (bottom-top)*1/3
+    a = new Square(i_block_centre,bottom-offset,wd,wd, [0,0]);
+    b = new Square(i_block_centre,top+offset,wd,wd, [0,0]);
+    c = new Square(i_block_centre,top,wd,wd, [0,0]);
+    d = new Square(i_block_centre,bottom,wd,wd, [0,0]);
 
     // Letter C
-    e = new Square(400,170,50,50, [0,0]);
-    f = new Square(400,230,50,50, [0,0]);
-    g = new Square(400,100,50,50, [0,0]);
-    h = new Square(400,300,50,50, [0,0]);
-    i = new Square(500,100,50,50, [0,0]);
-    j = new Square(500,300,50,50, [0,0]);
+    var c_block_centre = canvas.width/2
+    var c_left = c_block_centre - (canvas.width/3 *0.25*0.5)
+    var c_right = c_block_centre + (canvas.width/3 *0.25*0.5)
+    var offset = (bottom-top)*1/3
+    e = new Square(c_left,top+offset,wd,wd, [0,0]);
+    f = new Square(c_left,bottom-offset,wd,wd, [0,0]);
+    g = new Square(c_left,top,wd,wd, [0,0]);
+    h = new Square(c_left,bottom,wd,wd, [0,0]);
+    i = new Square(c_right,top,wd,wd, [0,0]);
+    j = new Square(c_right,bottom,wd,wd, [0,0]);
+    r = new Square(c_left+(c_right-c_left)*1/2,bottom,wd,wd, [0,0]);
+    s = new Square(c_left+(c_right-c_left)*1/2,top,wd,wd, [0,0]);
 
     // Letter E
-
-    k = new Square(700,170,50,50, [0,0]);
-    l = new Square(700,100,50,50, [0,0]);
-    m = new Square(700,230,50,50, [0,0]);
-    n = new Square(700,300,50,50, [0,0]);
-    o = new Square(800,100,50,50, [0,0]);
-    p = new Square(800,300,50,50, [0,0]);
-    q = new Square(770,200,50,50, [0,0]);
+    var e_block_centre = (2*canvas.width/3 + canvas.width) * 0.5
+    var e_left = e_block_centre - (canvas.width/3 *0.25*0.5)
+    var e_right = e_block_centre + (canvas.width/3 *0.25*0.5)
+    var offset = (bottom-top)*1/4
+    var mid = (bottom-top)*1/2
+    k = new Square(e_left,top+offset,wd,wd, [0,0]);
+    l = new Square(e_left,top,wd,wd, [0,0]);
+    m = new Square(e_left,bottom-offset,wd,wd, [0,0]);
+    n = new Square(e_left,bottom,wd,wd, [0,0]);
+    o = new Square(e_right, top,wd,wd, [0,0]);
+    p = new Square(e_right, bottom,wd,wd, [0,0]);
+    q = new Square(e_right, top+mid,wd,wd, [0,0]);
+    t = new Square(e_left+(e_right-e_left)*1/2,bottom,wd,wd, [0,0]);
+    u = new Square(e_left+(e_right-e_left)*1/2,top,wd,wd, [0,0]);
+    v = new Square(e_left+(e_right-e_left)*1/2,top+mid,wd,wd, [0,0]);
+    w = new Square(e_left,top+mid,wd,wd, [0,0]);
 
 
 
@@ -114,6 +150,12 @@ function init_canvas() {
     items.push(o);
     items.push(p);
     items.push(q);
+    items.push(r);
+    items.push(s);
+    items.push(t);
+    items.push(u);
+    items.push(v);
+    items.push(w);
 
     requestAnimationFrame(run_sim);
     x=0;
@@ -146,16 +188,40 @@ function update_canvas() {
     var collision_queue = []
 
     var action = []
-    // Detect Collisions with walls
+    // Plenty of Performance Enhancements Here
+    /* Cascading else-ifs: Doesn't handle crossing both sides on the same tick
+        but saves plenty of comparisons */
+    /* Performs velocity checks inside the ifs because we want an immediate continue
+        after them */
+    //Must check velocity to ensure that a rebound hasn't already occurred
     for (item of items) {
-        if (item.x+item.width>canvas.width || item.x < 0) {
-            // Subtracts 2 lots of the relevant velocity
+        if (item.x+item.width/2>canvas.width) {
+            if (item.v[0]<0) {
+                continue;
+            }
             action = [item,0,0,-2*item.v[0],0];
             collision_queue.push(action)
-        }
 
-        if (item.y+item.height>canvas.height || item.y < 0) {
-            // Subtracts 2 lots of the relevant velocity
+        }
+        else if (item.x-item.width/2 < 0) {
+            if (item.v[0]>0) {
+                continue;
+            }
+            action = [item,0,0,-2*item.v[0],0];
+            collision_queue.push(action)
+
+        }
+        else if (item.y+item.height/2>canvas.height) {
+            if (item.v[1]<0) {
+                continue;
+            }
+            action = [item,0,0,0,-2*item.v[1]];
+            collision_queue.push(action)
+        } 
+        else if (item.y-item.height/2 < 0)   {
+            if (item.v[1]>0) {
+                continue;
+            }
             action = [item,0,0,0,-2*item.v[1]];
             collision_queue.push(action)
         }
@@ -244,17 +310,27 @@ function bounding_intersection_check(box1, box2) {
 
     xmatch = false;
     ymatch = false;
+
+    lx1 = box1.x-box1.width/2
+    lx2= box2.x-box2.width/2
+    rx1 = box1.x+box1.width/2
+    rx2 = box2.x+box2.width/2
+
+    ly1 = box1.y-box1.height/2
+    ly2= box2.y-box2.height/2
+    ry1 = box1.y+box1.height/2
+    ry2 = box2.y+box2.height/2
     
-    if (box1.x > box2.x && box1.x < box2.x+box2.width) {
+    if (lx1 > lx2 && lx1 < rx2) {
         xmatch = true
     }
-    if (box2.x > box1.x && box2.x < box1.x+box1.width) {
+    if (lx2 > lx1 && lx2 < rx1) {
         xmatch = true
     }
-    if (box1.y > box2.y && box1.y < box2.y+box2.height) {
+    if (ly1 > ly2 && ly1 < ry2) {
         ymatch = true
     }
-    if (box2.y > box1.y && box2.y < box1.y+box1.height) {
+    if (ly2 > ly1 && ly2 < ry1) {
         ymatch = true
     }
 
