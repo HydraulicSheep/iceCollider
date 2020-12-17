@@ -37,8 +37,8 @@ function init_canvas() {
             
     // Get Canvas Element by ID
     var canvas = document.getElementById(CANVAS_ID);
-    canvas.width = width*0.99
-    canvas.height = height*0.90
+    canvas.width = width*0.995
+    canvas.height = height*0.89
 
 
     // Checks the canvas is available for drawing
@@ -47,8 +47,8 @@ function init_canvas() {
     // Adds Click event listener
     canvas.addEventListener('mousedown', e => {
         const rect = canvas.getBoundingClientRect()
-        vx = (Math.random()-0.5)*10
-        vy = (Math.random()-0.5)*10
+        vx = (Math.random()-0.5)*20
+        vy = (Math.random()-0.5)*20
         x = e.clientX - rect.left
         y = e.clientY - rect.top
         a = new Square(x,y,50,50,[vx,vy])
@@ -61,16 +61,59 @@ function init_canvas() {
     // use getContext to use the canvas for drawing
     var ctx = canvas.getContext('2d');
     
-    // Draws a single square
+    // Starting Layout
+    /*
     a = new Square(200,200,50,50,[-5,-5])
     b = new Square(30,30,50,50,[5,5])
     c = new Square(80,400,50,50,[1,5])
     d = new Square(600,10,50,50,[1,5])
+    */
+
+    // Added starting layout to spell out the word 'ICE'
+
+    // Letter I
+    a = new Square(200,230,50,50, [0,0]);
+    b = new Square(200,170,50,50, [0,0]);
+    c = new Square(200,100,50,50, [0,0]);
+    d = new Square(200,300,50,50, [0,0]);
+
+    // Letter C
+    e = new Square(400,170,50,50, [0,0]);
+    f = new Square(400,230,50,50, [0,0]);
+    g = new Square(400,100,50,50, [0,0]);
+    h = new Square(400,300,50,50, [0,0]);
+    i = new Square(500,100,50,50, [0,0]);
+    j = new Square(500,300,50,50, [0,0]);
+
+    // Letter E
+
+    k = new Square(700,170,50,50, [0,0]);
+    l = new Square(700,100,50,50, [0,0]);
+    m = new Square(700,230,50,50, [0,0]);
+    n = new Square(700,300,50,50, [0,0]);
+    o = new Square(800,100,50,50, [0,0]);
+    p = new Square(800,300,50,50, [0,0]);
+    q = new Square(770,200,50,50, [0,0]);
+
+
 
     items.push(a);
     items.push(b);
     items.push(c);
     items.push(d);
+    items.push(e);
+    items.push(f);
+    items.push(g);
+    items.push(h);
+    items.push(i);
+    items.push(j);
+    items.push(k);
+    items.push(l);
+    items.push(m);
+    items.push(n);
+    items.push(o);
+    items.push(p);
+    items.push(q);
 
     requestAnimationFrame(run_sim);
     x=0;

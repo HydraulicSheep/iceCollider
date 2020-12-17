@@ -6,13 +6,20 @@ html {
 
 }
 #title {
-    font-family: Arial, Helvetica, sans-serif;
-    color: rgb(0, 109, 199);
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     font-weight: bold;
     text-align: center;
-    padding: 0pc 0pc 1pc 0pc;
-    
+    padding: 1pc 0pc 1pc 0pc;
+    display: inline-block;
+    align-items: center;
+    justify-content: center;
+    width: 95%;
+    background: radial-gradient(rgb(101, 193, 221), rgb(236, 161, 158) 70%);
+    font-size: x-large;
+}
 
+#home {
+    display: inline-block;
 }
 
 #header {
@@ -20,6 +27,7 @@ html {
     border-style: solid;
     border-width: 0pc 0pc 0.01pc 0pc;
     
+    width: 100%;
 }
 
 #overlay {
@@ -45,7 +53,7 @@ html {
     text-decoration: none;
   }
 
-  
+
 .drop_button {
     background-color: black;
     color: white;
