@@ -15,7 +15,6 @@ class Square {
     }
 
     draw(context) {
-
         if (this.colliding>0) {
             context.fillStyle = "#f78243"; 
         } else {

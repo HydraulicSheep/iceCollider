@@ -5,6 +5,17 @@ var COLOUR_TIME = 10
 
 first = true;
 
+
+// List of Collision Detection Functions
+
+collision_funcs = [bounding_intersection_check]
+collision_setup = [bounding_intersection_setup]
+
+// List of Rebound Functions
+
+rebound_funcs = [no_momentum_rebound, bad_rebound]
+
+
 // Event Handler for Window Size Change
 function updateWindowSize() {
 
@@ -24,6 +35,31 @@ function getWidth() {
 function getHeight() {
 
     return window.innerHeight;
+}
+
+function mouseClickHandler(e) {
+    const rect = canvas.getBoundingClientRect()
+    if (first) {
+        vx = 20
+        vy = 20
+        first = false;
+    } else {
+        vx = (Math.random()-0.5)*20
+        vy = (Math.random()-0.5)*20
+    }
+    
+    x = e.clientX - rect.left
+    y = e.clientY - rect.top
+    a = new Square(x,y,50,50,[vx,vy])
+
+    // Delete an extra item when over the count
+    if (items.length > MAX_OBJS) {
+        items.shift()
+    }
+    if (items.length >= MAX_OBJS) {
+        items.shift()
+    }
+    items.push(a)
 }
 
 // Assigns event handler for window size change
@@ -47,44 +83,13 @@ function init_canvas() {
     if (!canvas.getContext) return;
 
     // Adds Click event listener
-    canvas.addEventListener('mousedown', e => {
-        const rect = canvas.getBoundingClientRect()
-        if (first) {
-            vx = 20
-            vy = 20
-            first = false;
-        } else {
-            vx = (Math.random()-0.5)*20
-            vy = (Math.random()-0.5)*20
-        }
-        
-        x = e.clientX - rect.left
-        y = e.clientY - rect.top
-        a = new Square(x,y,50,50,[vx,vy])
-
-        // Delete an extra item when over the count
-        if (items.length > MAX_OBJS) {
-            items.shift()
-        }
-        if (items.length >= MAX_OBJS) {
-            items.shift()
-        }
-        items.push(a)
-    })
+    canvas.addEventListener('mousedown', mouseClickHandler)
 
     // use getContext to use the canvas for drawing
     var ctx = canvas.getContext('2d');
-    
-    // Starting Layout
-    /*
-    a = new Square(200,200,50,50,[-5,-5])
-    b = new Square(30,30,50,50,[5,5])
-    c = new Square(80,400,50,50,[1,5])
-    d = new Square(600,10,50,50,[1,5])
-    */
+
 
     // Added starting layout to spell out the word 'ICE'
-
     // Block from 0 to width/3, width/3 to 2*width/3, 2*width/3 to width
 
     var top = canvas.height/3
@@ -131,8 +136,6 @@ function init_canvas() {
     v = new Square(e_left+(e_right-e_left)*1/2,top+mid,wd,wd, [0,0]);
     w = new Square(e_left,top+mid,wd,wd, [0,0]);
 
-
-
     items.push(a);
     items.push(b);
     items.push(c);
@@ -158,9 +161,9 @@ function init_canvas() {
     items.push(w);
 
     requestAnimationFrame(run_sim);
-    x=0;
 }
 
+// Decays colours over time
 function update_colours() {
 
     for (item of items) {
@@ -169,25 +172,23 @@ function update_colours() {
 }
 
 
-
 // Main Game Loop
 function run_sim() {
 
     clear_canvas();
+    update();
     update_colours();
-    update_canvas();
     paint();
     
     window.requestAnimationFrame(run_sim); 
 
 }
 
-function update_canvas() {
-    var canvas = document.getElementById(CANVAS_ID);  
-    // Collision queue to store pending changes
-    var collision_queue = []
+function do_wall_collision() {
 
     var action = []
+    var collision_queue = []
+
     // Plenty of Performance Enhancements Here
     /* Cascading else-ifs: Doesn't handle crossing both sides on the same tick
         but saves plenty of comparisons */
@@ -226,57 +227,33 @@ function update_canvas() {
             collision_queue.push(action)
         }
     }
+    return collision_queue
+}
 
-    // Bounding Box Collision Detection
-    var bounding_boxes = []
-    for (item of items) {
-        bounding_boxes.push(item.getBoundingBox())
-    }
+
+
+
+
+// Main update function for doing simulation logic.
+function update() {
+    
+
+    // Collision queue to store pending changes
+    // Check items for wall collisions
+    var collision_queue = do_wall_collision()
+
+    collision_setup[0]() //bounding_intersection_setup()
 
     for (var i=0; i<items.length;i++) {
         for (var j=i+1;j<items.length;j++) {
-            console.log(i)
             if (bounding_intersection_check(bounding_boxes[i], bounding_boxes[j])) {
                 
-                v1 = items[i].v
-                v2 = items[j].v
-
-                items[i].colliding = COLOUR_TIME
-                items[j].colliding = COLOUR_TIME
-
-                // Vector between bounding box centres
-                vCollision = get_vec(bounding_boxes[i],bounding_boxes[j]) 
-
-                // Unit Vector in direction between bounding box centres
-                collisionDir = vec_mul(vCollision,1/(mag(vCollision))) 
-
-                // Relative velocity of v1 to v2.
-                // If vrel > 0, object 1 is moving to the right relative to object 2
-                // If vrel < 0, object 1 is moving to the left relative to it object 2.
-                // Can think of it as locking object 2 and watching object 1 move.
-                vRel = [v1[0]-v2[0],v1[1]-v2[1]]
-                
-                // Resolves relative velocity parallel to collision vector.
-                // Gives parallel relative speed.
-                para_speed_rel = dotp(vRel,collisionDir)
-                
-                /* Relative motion opposite to collision vector. => Already moving apart so no more colliding needs
-                    to be done. */
-                if (para_speed_rel<0) {
-                    continue;
-                }
-
-                action = [items[i],0,0,-para_speed_rel*collisionDir[0],-para_speed_rel*collisionDir[1]];
-                collision_queue.push(action)
-                console.log(action)
-
-                action = [items[j],0,0,para_speed_rel*collisionDir[0],para_speed_rel*collisionDir[1]];
-                collision_queue.push(action)
-
+                collision_queue = collision_queue.concat(no_momentum_rebound(i,j))
             }
         }
     }
 
+    // Perform all the actions
     for (action of collision_queue) {
         i = action[0]
         i.update(action);
@@ -304,37 +281,6 @@ function paint() {
         shape.draw(context);
     }
 
-}
-
-function bounding_intersection_check(box1, box2) {
-
-    xmatch = false;
-    ymatch = false;
-
-    lx1 = box1.x-box1.width/2
-    lx2= box2.x-box2.width/2
-    rx1 = box1.x+box1.width/2
-    rx2 = box2.x+box2.width/2
-
-    ly1 = box1.y-box1.height/2
-    ly2= box2.y-box2.height/2
-    ry1 = box1.y+box1.height/2
-    ry2 = box2.y+box2.height/2
-    
-    if (lx1 > lx2 && lx1 < rx2) {
-        xmatch = true
-    }
-    if (lx2 > lx1 && lx2 < rx1) {
-        xmatch = true
-    }
-    if (ly1 > ly2 && ly1 < ry2) {
-        ymatch = true
-    }
-    if (ly2 > ly1 && ly2 < ry1) {
-        ymatch = true
-    }
-
-    return (xmatch && ymatch)
 }
 
 function get_vec(box1, box2) {
