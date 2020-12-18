@@ -5,6 +5,7 @@
         <script src="rebounds/bad.js"></script>
         <script src="rebounds/non-momentum.js"></script>
         <script src="detection/aabb.js"></script>
+        <script src="detection/sat.js"></script>
         <script src="main.js"></script>
         <script src="square.js"></script>
         <script src="vector.js"></script>
@@ -25,15 +26,20 @@
             
             Collision Detection:
             <div class="selector">
-                <button class="drop_button">Select...</button>
-                <div class="options">  </div>
+                <button class="drop_button" onclick="expandDropdown('collision_drop')">Select...</button>
+                <div class="options" id="collision_drop">  
+                    <a onclick="set_collision(0)">AABB</a>
+                </div>
             </div> 
             <br>
             <br>
             Rebound Algorithm:
             <div class="selector">
-                <button class="drop_button">Select...</button>
-                <div class="options">  </div>
+                <button class="drop_button" onclick="expandDropdown('rebound_drop')">Select...</button>
+                <div class="options" id="rebound_drop">  
+                    <a onclick="set_rebound(0)">No-Momentum Rebound</a>
+                    <a onclick="set_rebound(1)">Bad Rebound</a>
+                </div>
             </div> 
 
         </div> 

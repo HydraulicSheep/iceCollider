@@ -1,7 +1,9 @@
 // Axis Aligned Bounding Box Collision Method
 
+function bounding_intersection_check(i, j) {
 
-function bounding_intersection_check(box1, box2) {
+    box1 = items[i]
+    box2 = items[j]
 
     xmatch = false;
     ymatch = false;

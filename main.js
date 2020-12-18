@@ -5,16 +5,21 @@ var COLOUR_TIME = 10
 
 first = true;
 
+COLLISION_MODE = 1
+REBOUND_MODE = 0
 
 // List of Collision Detection Functions
 
-collision_funcs = [bounding_intersection_check]
-collision_setup = [bounding_intersection_setup]
+collision_funcs = [bounding_intersection_check, sat_check]
+collision_setup = [pass, pass]
 
 // List of Rebound Functions
 
 rebound_funcs = [no_momentum_rebound, bad_rebound]
 
+function pass() {
+    console.log('No Setup')
+}
 
 // Event Handler for Window Size Change
 function updateWindowSize() {
@@ -62,6 +67,20 @@ function mouseClickHandler(e) {
     items.push(a)
 }
 
+// Set collision mode
+function set_collision(mode) {
+    COLLISION_MODE = mode
+}
+
+// Set collision mode
+function set_rebound(mode) {
+    REBOUND_MODE = mode
+}
+
+function expandDropdown(id) {
+    document.getElementById(id).classList.toggle("show");
+  }
+
 // Assigns event handler for window size change
 window.onresize = updateWindowSize;
 
@@ -96,6 +115,14 @@ function init_canvas() {
     var bottom = 2*canvas.height/3
     var wd = Math.min(canvas.width,canvas.height)/15
 
+
+    a = new Square(50,50,50,50,[1,0])
+    //b = new Square(200,200,50,50,[1,1])
+    items.push(a);
+    //items.push(b);
+
+
+    /*
     // Letter I
     var i_block_centre = canvas.width/3 * 0.5
     var offset = (bottom-top)*1/3
@@ -159,7 +186,7 @@ function init_canvas() {
     items.push(u);
     items.push(v);
     items.push(w);
-
+    */
     requestAnimationFrame(run_sim);
 }
 
@@ -237,18 +264,21 @@ function do_wall_collision() {
 // Main update function for doing simulation logic.
 function update() {
     
+    bounding_intersection_setup()
 
     // Collision queue to store pending changes
     // Check items for wall collisions
     var collision_queue = do_wall_collision()
 
-    collision_setup[0]() //bounding_intersection_setup()
+    collision_setup[COLLISION_MODE]() //bounding_intersection_setup()
 
     for (var i=0; i<items.length;i++) {
         for (var j=i+1;j<items.length;j++) {
-            if (bounding_intersection_check(bounding_boxes[i], bounding_boxes[j])) {
-                
-                collision_queue = collision_queue.concat(no_momentum_rebound(i,j))
+            if (collision_funcs[COLLISION_MODE](i,j)) {
+                     
+                items[i].colliding = COLOUR_TIME
+                items[j].colliding = COLOUR_TIME
+                collision_queue = collision_queue.concat(rebound_funcs[REBOUND_MODE](i,j))
             }
         }
     }

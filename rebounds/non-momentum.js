@@ -5,9 +5,6 @@ function no_momentum_rebound(i, j) {
     v1 = items[i].v
     v2 = items[j].v
 
-    items[i].colliding = COLOUR_TIME
-    items[j].colliding = COLOUR_TIME
-
     // Vector between bounding box centres
     vCollision = get_vec(bounding_boxes[i],bounding_boxes[j]) 
 
