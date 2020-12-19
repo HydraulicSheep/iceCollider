@@ -6,7 +6,7 @@ function no_momentum_rebound(i, j) {
     v2 = items[j].v
 
     // Vector between bounding box centres
-    vCollision = get_vec(bounding_boxes[i],bounding_boxes[j]) 
+    vCollision = vec_sub(items[j].centre(), items[i].centre())
 
     // Unit Vector in direction between bounding box centres
     collisionDir = vec_mul(vCollision,1/(mag(vCollision))) 

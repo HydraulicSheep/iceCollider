@@ -3,11 +3,9 @@ function bad_rebound(i,j) {
     var collision_queue = []
 
     v1 = items[i].v
-    v1_t = get_vec(bounding_boxes[i],bounding_boxes[j])
+    v1_t = vec_sub(items[j].centre(), items[i].centre())
     v2 = items[j].v
     v2_t = vec_mul(v1_t,-1)
-    console.log(v1_t)
-    console.log(v2_t)
 
 
     v1_parallel = vec_mul(v1_t,dotp(v1,v1_t)/(mag(v1_t)**2))

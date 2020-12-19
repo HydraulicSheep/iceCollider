@@ -16,7 +16,7 @@ function sat_check(i, j) {
         var b1_max = -Infinity
         for (vertex of box1.vertices()) {
 
-            var proj = dotp(vertex,normal) // Gives signed magnitude of the vector projection times a constant
+            var proj = dotp(vertex,normal) // Gives signed magnitude of the vector projection times mag(normal)
             if (proj>=b1_max) {
                 b1_max = proj
             }
@@ -32,7 +32,7 @@ function sat_check(i, j) {
         var b2_max = -Infinity
         for (vertex of box2.vertices()) {
 
-            var proj = dotp(vertex,normal) // Gives signed magnitude of the vector projection times a constant
+            var proj = dotp(vertex,normal) // Gives signed magnitude of the vector projection times mag(normal)
             if (proj>=b2_max) {
                 b2_max = proj
             }

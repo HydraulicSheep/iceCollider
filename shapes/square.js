@@ -76,4 +76,24 @@ class Square {
                 [this.x+this.width/2,this.y+this.height/2]]
 
     }
+
+    centre() {
+        return [this.x,this.y]
+    }
+
+    min_x() {
+        return this.x -this.width/2
+    }
+
+    max_x() {
+        return this.x +this.width/2
+    }
+
+    min_y() {
+        return this.y -this.height/2
+    }
+
+    max_y() {
+        return this.y + this.height/2
+    }
 }

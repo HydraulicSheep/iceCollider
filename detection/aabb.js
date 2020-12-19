@@ -2,8 +2,8 @@
 
 function bounding_intersection_check(i, j) {
 
-    box1 = items[i]
-    box2 = items[j]
+    box1 = bounding_boxes[i]
+    box2 = bounding_boxes[j]
 
     xmatch = false;
     ymatch = false;

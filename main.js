@@ -119,9 +119,10 @@ function init_canvas() {
 
 
     a = new Square(50,50,50,50,[1,0])
+    b = new Triangle([[100,100],[200,200],[180,100]],[1,0])
     //b = new Square(200,200,50,50,[1,1])
     items.push(a);
-    //items.push(b);
+    items.push(b);
 
 
     /*
@@ -225,7 +226,7 @@ function do_wall_collision() {
         after them */
     //Must check velocity to ensure that a rebound hasn't already occurred
     for (item of items) {
-        if (item.x+item.width/2>canvas.width) {
+        if (item.max_x()>canvas.width) {
             if (item.v[0]<0) {
                 continue;
             }
@@ -233,7 +234,7 @@ function do_wall_collision() {
             collision_queue.push(action)
 
         }
-        else if (item.x-item.width/2 < 0) {
+        else if (item.min_x()< 0) {
             if (item.v[0]>0) {
                 continue;
             }
@@ -241,14 +242,14 @@ function do_wall_collision() {
             collision_queue.push(action)
 
         }
-        else if (item.y+item.height/2>canvas.height) {
+        else if (item.max_y()>canvas.height) {
             if (item.v[1]<0) {
                 continue;
             }
             action = [item,0,0,0,-2*item.v[1]];
             collision_queue.push(action)
         } 
-        else if (item.y-item.height/2 < 0)   {
+        else if (item.min_y() < 0)   {
             if (item.v[1]>0) {
                 continue;
             }
@@ -267,7 +268,7 @@ function do_wall_collision() {
 function update() {
     
     bounding_intersection_setup()
-
+    console.log(bounding_boxes)
     // Collision queue to store pending changes
     // Check items for wall collisions
     var collision_queue = do_wall_collision()
@@ -312,14 +313,5 @@ function paint() {
     for (shape of items) {
         shape.draw(context);
     }
-
-}
-
-function get_vec(box1, box2) {
-
-    relx = box2.x - box1.x;
-    rely = box2.y - box1.y;
-
-    return [relx, rely]
 
 }
