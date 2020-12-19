@@ -117,15 +117,15 @@ function init_canvas() {
     var bottom = 2*canvas.height/3
     var wd = Math.min(canvas.width,canvas.height)/15
 
-
+/*
     a = new Square(50,50,50,50,[1,0])
     b = new Triangle([[100,100],[200,200],[180,100]],[1,0])
     //b = new Square(200,200,50,50,[1,1])
     items.push(a);
     items.push(b);
+*/
 
-
-    /*
+    
     // Letter I
     var i_block_centre = canvas.width/3 * 0.5
     var offset = (bottom-top)*1/3
@@ -189,7 +189,7 @@ function init_canvas() {
     items.push(u);
     items.push(v);
     items.push(w);
-    */
+    
     requestAnimationFrame(run_sim);
 }
 
