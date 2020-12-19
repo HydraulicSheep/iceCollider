@@ -5,7 +5,7 @@ var COLOUR_TIME = 10
 
 first = true;
 
-COLLISION_MODE = 1
+COLLISION_MODE = 0
 REBOUND_MODE = 0
 
 // List of Collision Detection Functions
@@ -17,6 +17,8 @@ collision_setup = [pass, pass]
 
 rebound_funcs = [no_momentum_rebound, bad_rebound]
 
+
+// Dummy function for collisions requiring no setup.
 function pass() {
     console.log('No Setup')
 }
