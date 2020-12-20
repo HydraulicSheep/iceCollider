@@ -1,5 +1,5 @@
 var CANVAS_ID = 'canvas';
-var TIME_STEP = 0.1
+var TIME_STEP = 1
 var MAX_OBJS = 15
 var COLOUR_TIME = 10
 var TYPE = 'square'
