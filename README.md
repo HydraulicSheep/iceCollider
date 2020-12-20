@@ -1,5 +1,9 @@
 # ICE Collider
 
+![Website](https://img.shields.io/website?down_message=offline&up_color=green&up_message=online&url=https%3A%2F%2Fhydraulicsheep.github.io) 
+![GitHub last commit](https://img.shields.io/github/last-commit/HydraulicSheep/iceCollider)
+
+
 Visualisation of various **2D collision algorithms** for convex polygons.
 
 ---
