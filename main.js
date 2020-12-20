@@ -53,6 +53,8 @@ function canvasClickHandler(e) {
         vx = 20
         vy = 20
         first = false;
+        var elem = document.getElementById('start_message');
+        elem.style.visibility = 'hidden';
     } else {
         vx = (Math.random()-0.5)*20
         vy = (Math.random()-0.5)*20
