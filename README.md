@@ -6,6 +6,8 @@
 
 Visualisation of various **2D collision algorithms** for convex polygons.
 
+**Try it out** on my [my website](https://hydraulicsheep.github.io/iceCollider)!
+
 ![Preview Image](README_files/collisionpreview.png)
 
 ---
