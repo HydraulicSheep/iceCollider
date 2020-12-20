@@ -6,6 +6,8 @@
 
 Visualisation of various **2D collision algorithms** for convex polygons.
 
+![Preview Image](README_files/collisionpreview.png)
+
 ---
 
 ## Collision Algorithms:
