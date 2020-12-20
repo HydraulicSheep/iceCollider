@@ -44,7 +44,7 @@ function getHeight() {
     return window.innerHeight;
 }
 
-function mouseClickHandler(e) {
+function canvasClickHandler(e) {
     const rect = canvas.getBoundingClientRect()
     if (first) {
         vx = 20
@@ -67,6 +67,21 @@ function mouseClickHandler(e) {
         items.shift()
     }
     items.push(a)
+}
+
+window.onclick = function(event) {
+
+    if (!event.target.matches('.drop_button')) {
+        var dropdowns = document.getElementsByClassName("options");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+              openDropdown.classList.remove('show');
+            }
+        }
+    }
+    
 }
 
 // Set collision mode
@@ -104,7 +119,7 @@ function init_canvas() {
     if (!canvas.getContext) return;
 
     // Adds Click event listener
-    canvas.addEventListener('mousedown', mouseClickHandler)
+    canvas.addEventListener('mousedown', canvasClickHandler)
 
     // use getContext to use the canvas for drawing
     var ctx = canvas.getContext('2d');
