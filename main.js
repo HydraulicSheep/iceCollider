@@ -1,7 +1,8 @@
 var CANVAS_ID = 'canvas';
-var TIME_STEP = 1
+var TIME_STEP = 0.1
 var MAX_OBJS = 15
 var COLOUR_TIME = 10
+var TYPE = 'square'
 
 first = true;
 
@@ -20,7 +21,7 @@ rebound_funcs = [no_momentum_rebound, bad_rebound]
 
 // Dummy function for collisions requiring no setup.
 function pass() {
-    console.log('No Setup')
+    return;
 }
 
 // Event Handler for Window Size Change
@@ -44,6 +45,8 @@ function getHeight() {
     return window.innerHeight;
 }
 
+
+// Handler for clicks on the canvas, creating shapes
 function canvasClickHandler(e) {
     const rect = canvas.getBoundingClientRect()
     if (first) {
@@ -57,7 +60,12 @@ function canvasClickHandler(e) {
     
     x = e.clientX - rect.left
     y = e.clientY - rect.top
-    a = new Square(x,y,50,50,[vx,vy])
+    if (TYPE=='square') {
+        a = new Square(x,y,50,50,[vx,vy])
+    } else {
+        a = new Triangle([[x-50,y+50],[x+50,y+50],[x,y-50]],[vx,vy])
+    }
+    
 
     // Delete an extra item when over the count
     if (items.length > MAX_OBJS) {
@@ -87,11 +95,46 @@ window.onclick = function(event) {
 // Set collision mode
 function set_collision(mode) {
     COLLISION_MODE = mode
+    for (var i=0; i<collision_funcs.length;i++) {
+        var elem = document.getElementById("collision"+i)
+        if (elem.classList.contains("selected")) {
+            elem.classList.remove("selected")
+        }
+    }
+    var elem = document.getElementById("collision"+mode)
+    elem.classList.add("selected")
 }
 
-// Set collision mode
+// Set rebound mode
 function set_rebound(mode) {
     REBOUND_MODE = mode
+    for (var i=0; i<rebound_funcs.length;i++) {
+        var elem = document.getElementById("rebound"+i)
+        if (elem.classList.contains("selected")) {
+            elem.classList.remove("selected")
+        }
+    }
+    var elem = document.getElementById("rebound"+mode)
+    elem.classList.add("selected")
+}
+
+// Set shape created by clicks
+function setshape(type) {
+
+    TYPE = type
+
+    var elem = document.getElementById("mode_square")
+    if (elem.classList.contains("chosen_shape")) {
+        elem.classList.remove("chosen_shape")
+    }
+
+    var elem = document.getElementById("mode_triangle")
+    if (elem.classList.contains("chosen_shape")) {
+        elem.classList.remove("chosen_shape")
+    }
+
+    var elem = document.getElementById("mode_"+type)
+    elem.classList.add("chosen_shape")
 }
 
 function expandDropdown(id) {
@@ -111,8 +154,8 @@ function init_canvas() {
             
     // Get Canvas Element by ID
     var canvas = document.getElementById(CANVAS_ID);
-    canvas.width = width*0.995
-    canvas.height = height*0.89
+    canvas.width = width*0.99
+    canvas.height = height*0.886
 
 
     // Checks the canvas is available for drawing
@@ -132,15 +175,7 @@ function init_canvas() {
     var bottom = 2*canvas.height/3
     var wd = Math.min(canvas.width,canvas.height)/15
 
-/*
-    a = new Square(50,50,50,50,[1,0])
-    b = new Triangle([[100,100],[200,200],[180,100]],[1,0])
-    //b = new Square(200,200,50,50,[1,1])
-    items.push(a);
-    items.push(b);
-*/
 
-    
     // Letter I
     var i_block_centre = canvas.width/3 * 0.5
     var offset = (bottom-top)*1/3
@@ -283,7 +318,6 @@ function do_wall_collision() {
 function update() {
     
     bounding_intersection_setup()
-    console.log(bounding_boxes)
     // Collision queue to store pending changes
     // Check items for wall collisions
     var collision_queue = do_wall_collision()

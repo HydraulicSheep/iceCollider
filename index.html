@@ -29,8 +29,8 @@
             <div class="selector">
                 <button class="drop_button" onclick="expandDropdown('collision_drop')">Select...</button>
                 <div class="options" id="collision_drop">  
-                    <a onclick="set_collision(0)">AABB</a>
-                    <a onclick="set_collision(1)">Separating Axis Theorem</a>
+                    <a id="collision0" class="selected" onclick="set_collision(0)">AABB</a>
+                    <a id="collision1" onclick="set_collision(1)">Separating Axis Theorem</a>
                 </div>
             </div> 
             <br>
@@ -39,12 +39,24 @@
             <div class="selector">
                 <button class="drop_button" onclick="expandDropdown('rebound_drop')">Select...</button>
                 <div class="options" id="rebound_drop">  
-                    <a onclick="set_rebound(0)">No-Momentum Rebound</a>
-                    <a onclick="set_rebound(1)">Bad Rebound</a>
+                    <a id="rebound0" class="selected" onclick="set_rebound(0)">No-Momentum Rebound</a>
+                    <a id="rebound1" onclick="set_rebound(1)">Bad Rebound</a>
                 </div>
             </div> 
 
         </div> 
+
+        <div id="mode_square" onclick="setshape('square')" class="mode chosen_shape">
+            <svg width="20" height="20">
+                <rect width="20" height="20" style="fill:#0081b0;stroke-width:2;stroke:rgb(66, 95, 105)" />
+            </svg>
+        </div> 
+
+        <div id="mode_triangle" onclick="setshape('triangle')" class="mode">
+            <svg height="20" width="20">
+                <polygon points="20,20 0,20 10,0" style="fill:#f78243;stroke:rgb(0, 0, 0);stroke-width:1" />
+            </svg> 
+        </div>
         <canvas id="canvas" width="100%" height="100%"></canvas>
     </body>
 </html>
